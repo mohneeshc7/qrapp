@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:qrapp/login.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -8,6 +11,37 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final _name = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailcontroller = TextEditingController();
+  final _passwordcontroller = TextEditingController();
+  void register() async {
+     // print(_name.text);
+     // print(_nameController.text);
+     // print(_emailcontroller.text);
+     // print(_passingcontroller.text);
+
+    Uri uri = Uri.parse('https://scnner-web.onrender.com/api/register');
+    var respose = await http.post(uri,
+        headers: <String, String>{
+          'content-Type': 'application/json;charset=UTF-8',
+        },
+        body: jsonEncode({
+          'name': _name.text,
+          'email':_emailcontroller.text,
+          'rollno':_nameController.text,
+          'password':_passwordcontroller.text,
+        }));
+    var data = jsonDecode(respose.body);
+    print(data["messagi"]);
+    if(respose.statusCode ==200){
+      Navigator.push(context,MaterialPageRoute(builder: (context) =>Login()));
+    }else{
+      ScaffoldMessenger.of (context).showSnackBar(SnackBar(content:Text('uod')));
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +55,7 @@ class _RegisterState extends State<Register> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: _name,
                 decoration: InputDecoration(
                   hintText: 'Enter your name',
                   enabledBorder: OutlineInputBorder(
@@ -32,6 +67,7 @@ class _RegisterState extends State<Register> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                   hintText: 'Enter of birth',
                   enabledBorder: OutlineInputBorder(
@@ -43,6 +79,7 @@ class _RegisterState extends State<Register> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: _emailcontroller,
                 decoration: InputDecoration(
                   hintText: 'Enter you email',
                   enabledBorder: OutlineInputBorder(
@@ -51,8 +88,10 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-            Padding(padding: const EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
+                controller: _passwordcontroller,
                 decoration: InputDecoration(
                   hintText: 'Enter you pas',
                   enabledBorder: OutlineInputBorder(
